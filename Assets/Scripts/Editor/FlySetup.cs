@@ -67,6 +67,7 @@ namespace DreamChase.Editor
                 controllerSo.FindProperty("retreatWorldPosition").vector3Value = retreatPoint.position;
                 controllerSo.FindProperty("retreatSpeed").floatValue = 2.5f;
                 controllerSo.FindProperty("idleOnly").boolValue = true;
+                controllerSo.FindProperty("flyOnPlay").boolValue = true;
                 controllerSo.ApplyModifiedProperties();
                 EditorUtility.SetDirty(controller);
                 ApplyPrefab(butterfly);
@@ -74,7 +75,7 @@ namespace DreamChase.Editor
 
             ApplyPrefab(cat);
             EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
-            Debug.Log("P4 fly is wired (four-side clamp, flySpeed, butterfly retreat).");
+            Debug.Log("P4 fly is wired (four-side clamp, flySpeed, butterfly fly-on-play).");
         }
 
         [MenuItem("DreamChase/P4 Smoke Fly Move")]
@@ -156,9 +157,9 @@ namespace DreamChase.Editor
                 return;
             }
 
-            _smokeButterflyStart = _smokeButterfly.transform.position;
             _smokeTargetX = RetreatTargetX(_smokeButterfly);
-            _smokeButterfly.RetreatToPoint();
+            _smokeButterflyStart = new Vector3(_smokeTargetX - 3f, _smokeButterfly.transform.position.y, _smokeButterfly.transform.position.z);
+            _smokeButterfly.EditorResetAndFly(_smokeButterflyStart);
 
             int ticks = 180;
             for (int i = 0; i < ticks; i++)
@@ -278,14 +279,14 @@ namespace DreamChase.Editor
         static Transform EnsureRetreatPoint(Vector3 butterflyPosition)
         {
             GameObject point = GameObject.Find("ButterflyRetreatPoint");
-            if (point == null)
-            {
-                GameObject world = GameObject.Find("World");
-                point = new GameObject("ButterflyRetreatPoint");
-                Undo.RegisterCreatedObjectUndo(point, "Create ButterflyRetreatPoint");
-                if (world != null)
-                    point.transform.SetParent(world.transform, true);
-            }
+            if (point != null)
+                return point.transform;
+
+            GameObject world = GameObject.Find("World");
+            point = new GameObject("ButterflyRetreatPoint");
+            Undo.RegisterCreatedObjectUndo(point, "Create ButterflyRetreatPoint");
+            if (world != null)
+                point.transform.SetParent(world.transform, true);
 
             point.transform.position = new Vector3(RetreatX, butterflyPosition.y, butterflyPosition.z);
             return point.transform;

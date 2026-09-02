@@ -11,57 +11,96 @@ namespace DreamChase
         [SerializeField] Vector3 retreatWorldPosition = new Vector3(8f, 1.7f, 0f);
         [SerializeField] float retreatSpeed = 2.5f;
         [SerializeField] bool idleOnly = true;
+        [SerializeField] bool flyOnPlay = true;
 
         Animator _animator;
+        Collider _collider;
         Rigidbody _body;
-        bool _retreating;
-        bool _retreatRequested;
-        float _targetX;
+        bool _flying;
+        bool _flyRequested;
+        bool _caught;
+        Vector3 _targetPosition;
 
-        public bool IsRetreating { get { return _retreating; } }
-        public bool HasReachedRetreatPoint { get { return _retreatRequested && !_retreating; } }
+        public bool IsRetreating { get { return _flying; } }
+        public bool HasReachedRetreatPoint { get { return _flyRequested && !_flying && !_caught; } }
 
         void Awake()
         {
             _animator = GetComponent<Animator>();
+            _collider = GetComponent<Collider>();
             _body = GetComponent<Rigidbody>();
             if (idleOnly && _animator != null)
                 _animator.speed = 1f;
         }
 
+        void Start()
+        {
+            if (flyOnPlay)
+                FlyToPoint();
+        }
+
         void FixedUpdate()
         {
-            TickRetreat(Time.fixedDeltaTime);
+            TickFlight(Time.fixedDeltaTime);
+        }
+
+        public void FlyToPoint()
+        {
+            if (_caught)
+                return;
+
+            _targetPosition = retreatTarget != null ? retreatTarget.position : retreatWorldPosition;
+            _targetPosition.z = transform.position.z;
+            _flyRequested = true;
+            _flying = true;
         }
 
         public void RetreatToPoint()
         {
-            _targetX = retreatTarget != null ? retreatTarget.position.x : retreatWorldPosition.x;
-            _retreatRequested = true;
-            _retreating = true;
+            FlyToPoint();
+        }
+
+        public void OnCaught()
+        {
+            _caught = true;
+            _flying = false;
+            if (_collider != null)
+                _collider.enabled = false;
         }
 
 #if UNITY_EDITOR
         public void EditorTickRetreat(float dt)
         {
-            if (!_retreatRequested)
-                RetreatToPoint();
+            if (!_flyRequested)
+                FlyToPoint();
 
-            TickRetreat(dt);
+            TickFlight(dt);
+        }
+
+        public void EditorResetAndFly(Vector3 startPosition)
+        {
+            _caught = false;
+            if (_collider != null)
+                _collider.enabled = true;
+
+            ApplyPosition(startPosition);
+            FlyToPoint();
         }
 #endif
 
-        void TickRetreat(float dt)
+        void TickFlight(float dt)
         {
-            if (!_retreating)
+            if (!_flying)
                 return;
 
             Vector3 position = transform.position;
-            position.x = Mathf.MoveTowards(position.x, _targetX, retreatSpeed * dt);
+            Vector3 target = _targetPosition;
+            target.z = position.z;
+            position = Vector3.MoveTowards(position, target, retreatSpeed * dt);
             ApplyPosition(position);
 
-            if (Mathf.Abs(position.x - _targetX) <= ArriveEpsilon)
-                _retreating = false;
+            if ((position - target).sqrMagnitude <= ArriveEpsilon * ArriveEpsilon)
+                _flying = false;
         }
 
         void ApplyPosition(Vector3 position)

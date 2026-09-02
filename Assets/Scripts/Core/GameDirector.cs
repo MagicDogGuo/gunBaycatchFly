@@ -42,6 +42,9 @@ namespace DreamChase
             SetPhase(GamePhase.Transforming);
             player.EnterTransforming();
 
+            if (butterfly != null)
+                butterfly.OnCaught();
+
             if (transformSequence != null)
             {
                 transformSequence.PlayAt(player.transform.position);
@@ -54,10 +57,6 @@ namespace DreamChase
             }
 
             player.EnterFlying();
-
-            if (butterfly != null)
-                butterfly.RetreatToPoint();
-
             SetPhase(GamePhase.Flying);
             _isBusy = false;
         }

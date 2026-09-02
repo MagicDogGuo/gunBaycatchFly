@@ -62,7 +62,7 @@ namespace DreamChase.Editor
             EditorUtility.SetDirty(directorObject);
             EditorUtility.SetDirty(sequence);
             EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
-            Debug.Log("P3 transform catch is wired (director, burst, butterfly retreat, player trigger).");
+            Debug.Log("P3 transform catch is wired (director, burst, butterfly fly-on-play, player trigger).");
         }
 
         [MenuItem("DreamChase/P3 Smoke Catch Walk")]
@@ -174,7 +174,7 @@ namespace DreamChase.Editor
 
             bool flying = _smokeDirector.CurrentPhase == GamePhase.Flying && _smokeMotor.Phase == GamePhase.Flying;
             bool stillAtStart = (_smokeMotor.transform.position - _smokeStart).sqrMagnitude < 0.0001f;
-            bool retreating = _smokeButterfly != null && _smokeButterfly.IsRetreating;
+            bool butterflyWaiting = _smokeButterfly != null && !_smokeButterfly.IsRetreating;
             float butterflyDeltaX = _smokeButterfly != null ? _smokeButterfly.transform.position.x - _smokeButterflyStart.x : 0f;
 
             Debug.Log(
@@ -182,7 +182,7 @@ namespace DreamChase.Editor
                 + " motor=" + _smokeMotor.Phase
                 + " flying=" + flying
                 + " stillAtStart=" + stillAtStart
-                + " butterflyRetreating=" + retreating
+                + " butterflyWaiting=" + butterflyWaiting
                 + " butterflyDeltaX=" + butterflyDeltaX);
         }
 
@@ -206,14 +206,14 @@ namespace DreamChase.Editor
         static Transform EnsureRetreatPoint(Vector3 butterflyPosition)
         {
             GameObject point = GameObject.Find("ButterflyRetreatPoint");
-            if (point == null)
-            {
-                Transform world = FindTransform("World");
-                point = new GameObject("ButterflyRetreatPoint");
-                Undo.RegisterCreatedObjectUndo(point, "Create ButterflyRetreatPoint");
-                if (world != null)
-                    point.transform.SetParent(world, true);
-            }
+            if (point != null)
+                return point.transform;
+
+            Transform world = FindTransform("World");
+            point = new GameObject("ButterflyRetreatPoint");
+            Undo.RegisterCreatedObjectUndo(point, "Create ButterflyRetreatPoint");
+            if (world != null)
+                point.transform.SetParent(world, true);
 
             point.transform.position = new Vector3(RetreatX, butterflyPosition.y, butterflyPosition.z);
             return point.transform;
@@ -321,7 +321,6 @@ namespace DreamChase.Editor
             body.useGravity = false;
             body.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
             body.constraints = RigidbodyConstraints.FreezeRotation
-                | RigidbodyConstraints.FreezePositionY
                 | RigidbodyConstraints.FreezePositionZ;
 
             ButterflyController controller = butterfly.GetComponent<ButterflyController>();
@@ -331,6 +330,7 @@ namespace DreamChase.Editor
             SerializedObject controllerSo = new SerializedObject(controller);
             controllerSo.FindProperty("retreatSpeed").floatValue = 2.5f;
             controllerSo.FindProperty("idleOnly").boolValue = true;
+            controllerSo.FindProperty("flyOnPlay").boolValue = true;
             controllerSo.ApplyModifiedProperties();
         }
 
@@ -410,6 +410,7 @@ namespace DreamChase.Editor
                 SerializedObject controllerSo = new SerializedObject(controller);
                 controllerSo.FindProperty("retreatTarget").objectReferenceValue = retreatPoint;
                 controllerSo.FindProperty("retreatWorldPosition").vector3Value = retreatPoint.position;
+                controllerSo.FindProperty("flyOnPlay").boolValue = true;
                 controllerSo.ApplyModifiedProperties();
             }
         }
