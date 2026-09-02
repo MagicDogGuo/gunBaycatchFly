@@ -18,6 +18,8 @@ namespace DreamChase
         [SerializeField] float flySpeed = 4f;
         [SerializeField] float groundedSkin = 0.08f;
         [SerializeField] float lockedZ = 0f;
+        [SerializeField] ViewportBounds viewportBounds;
+        [SerializeField] bool clampGroundLeft = true;
 
         CharacterController _controller;
         PlayerInputReader _inputReader;
@@ -38,6 +40,8 @@ namespace DreamChase
         {
             _controller = GetComponent<CharacterController>();
             _inputReader = GetComponent<PlayerInputReader>();
+            if (viewportBounds == null)
+                viewportBounds = FindObjectOfType<ViewportBounds>();
             _baseScale = transform.localScale;
             _baseScale.x = Mathf.Abs(_baseScale.x);
             FacingSign = 1;
@@ -69,6 +73,7 @@ namespace DreamChase
             }
 
             LockZ();
+            ApplyViewportClamp();
         }
 
         public void EnterTransforming()
@@ -103,6 +108,7 @@ namespace DreamChase
         {
             TickGround(input, dt);
             LockZ();
+            ApplyViewportClamp();
         }
 #endif
 
@@ -187,6 +193,37 @@ namespace DreamChase
 
             position.z = lockedZ;
             transform.position = position;
+        }
+
+        void ApplyViewportClamp()
+        {
+            if (viewportBounds == null)
+                return;
+
+            bool clampLeft = false;
+            bool clampRight = false;
+            bool clampBottom = false;
+            bool clampTop = false;
+
+            switch (Phase)
+            {
+                case GamePhase.Ground:
+                case GamePhase.Transforming:
+                    clampLeft = clampGroundLeft;
+                    break;
+                case GamePhase.Flying:
+                    return;
+            }
+
+            if (!clampLeft && !clampRight && !clampBottom && !clampTop)
+                return;
+
+            float previousX = transform.position.x;
+            if (!viewportBounds.TryClampController(_controller, clampLeft, clampRight, clampBottom, clampTop))
+                return;
+
+            if (clampLeft && transform.position.x > previousX && _velocity.x < 0f)
+                _velocity.x = 0f;
         }
     }
 }
