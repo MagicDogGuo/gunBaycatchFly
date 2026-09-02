@@ -1149,6 +1149,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Cat_Ganbei
       objectReference: {fileID: 0}
+    - target: {fileID: 5811773043257478590, guid: 2f5e799948f909e48b50acd1307f8989,
+        type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: 7658485e017614047ac8cfacc157cb5b, type: 2}
     - target: {fileID: 7815366805931395622, guid: 2f5e799948f909e48b50acd1307f8989,
         type: 3}
       propertyPath: m_LocalPosition.x
