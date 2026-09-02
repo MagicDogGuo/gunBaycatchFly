@@ -28,7 +28,7 @@ namespace DreamChase
         void LateUpdate()
         {
             float speed = _motor.Phase == GamePhase.Flying
-                ? (_motor.IsMoving ? FlyingSpeedDisplay : 0f)
+                ? FlyingSpeedDisplay
                 : Mathf.Abs(_motor.Velocity.x);
 
             _animator.SetFloat(SpeedHash, speed);

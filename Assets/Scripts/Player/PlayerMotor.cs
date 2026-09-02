@@ -110,6 +110,16 @@ namespace DreamChase
             LockZ();
             ApplyViewportClamp();
         }
+
+        public void EditorApplyFlyingInput(PlayerInputSnapshot input, float dt)
+        {
+            if (Phase != GamePhase.Flying)
+                EnterFlying();
+
+            TickFlying(input, dt);
+            LockZ();
+            ApplyViewportClamp();
+        }
 #endif
 
         void TickGround(PlayerInputSnapshot input, float dt)
@@ -158,6 +168,9 @@ namespace DreamChase
         void TickFlying(PlayerInputSnapshot input, float dt)
         {
             Vector2 move = input.Move;
+            if (move.sqrMagnitude > 1f)
+                move.Normalize();
+
             _velocity.x = move.x * flySpeed;
             _velocity.y = move.y * flySpeed;
             _controller.Move(_velocity * dt);
@@ -212,18 +225,30 @@ namespace DreamChase
                     clampLeft = clampGroundLeft;
                     break;
                 case GamePhase.Flying:
-                    return;
+                    clampLeft = true;
+                    clampRight = true;
+                    clampBottom = true;
+                    clampTop = true;
+                    break;
             }
 
             if (!clampLeft && !clampRight && !clampBottom && !clampTop)
                 return;
 
             float previousX = transform.position.x;
+            float previousY = transform.position.y;
             if (!viewportBounds.TryClampController(_controller, clampLeft, clampRight, clampBottom, clampTop))
                 return;
 
-            if (clampLeft && transform.position.x > previousX && _velocity.x < 0f)
+            Vector3 position = transform.position;
+            if (clampLeft && position.x > previousX && _velocity.x < 0f)
                 _velocity.x = 0f;
+            if (clampRight && position.x < previousX && _velocity.x > 0f)
+                _velocity.x = 0f;
+            if (clampBottom && position.y > previousY && _velocity.y < 0f)
+                _velocity.y = 0f;
+            if (clampTop && position.y < previousY && _velocity.y > 0f)
+                _velocity.y = 0f;
         }
     }
 }
