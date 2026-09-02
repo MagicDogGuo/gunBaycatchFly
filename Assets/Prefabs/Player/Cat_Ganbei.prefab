@@ -14,6 +14,10 @@ GameObject:
   - component: {fileID: 5811773043257478590}
   - component: {fileID: 281389873320368782}
   - component: {fileID: 4497673056701414366}
+  - component: {fileID: 8715822436363537527}
+  - component: {fileID: 8166208414881592538}
+  - component: {fileID: 3200536072709308631}
+  - component: {fileID: 628022285380632408}
   m_Layer: 6
   m_Name: Cat_Ganbei
   m_TagString: Player
@@ -29,7 +33,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5489122877567906723}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -1.5, y: 0.95, z: 0}
   m_LocalScale: {x: 0.2, y: 0.2, z: 0.2}
   m_ConstrainProportionsScale: 0
@@ -96,7 +100,7 @@ Animator:
   m_GameObject: {fileID: 5489122877567906723}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: ef6a7aacae1e6894b8f2056febfc0250, type: 2}
+  m_Controller: {fileID: 9100000, guid: 7658485e017614047ac8cfacc157cb5b, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -200,3 +204,72 @@ MonoBehaviour:
   physicsRotationInheritanceFactorDeprecated: 1
   physicsMovementRelativeToDeprecated: {fileID: 0}
   maskInteractionDeprecated: 0
+--- !u!143 &8715822436363537527
+CharacterController:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5489122877567906723}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Height: 9.484135
+  m_Radius: 1.3269542
+  m_SlopeLimit: 45
+  m_StepOffset: 0.3
+  m_SkinWidth: 0.08
+  m_MinMoveDistance: 0.001
+  m_Center: {x: 0, y: -0.022067428, z: 0}
+--- !u!114 &8166208414881592538
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5489122877567906723}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a740dfe68e5c06b42b931e33c04a1021, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &3200536072709308631
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5489122877567906723}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bfe49da01fb0a4342bee69a9e4f54b8d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  walkSpeed: 3
+  runSpeed: 6
+  jumpHeight: 1.5
+  gravity: -20
+  flySpeed: 4
+  groundedSkin: 0.08
+  lockedZ: 0
+--- !u!114 &628022285380632408
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5489122877567906723}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 115db11a0b520fc4b9a3a9591326f08f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
