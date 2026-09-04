@@ -47,7 +47,7 @@ namespace DreamChase
 
             if (transformSequence != null)
             {
-                transformSequence.PlayAt(player.transform.position);
+                transformSequence.PlayAt(player.transform.position+Vector3.forward*-0.5f);
                 if (transformSequence.Duration > 0f)
                     yield return new WaitForSeconds(transformSequence.Duration);
             }
