@@ -22,13 +22,13 @@ Renderer 設定：使用 URP Renderer；未另外加入自訂 Renderer Feature
 ----------------------------------------------------------------------
 1. 3D_Game_Assets_Flora
    - 取得平台：Unity Asset Store
-   - 用途：場景中的樹木、花草等自然環境模型
+   - 用途：場景中的花草等自然環境模型
    - 來源：
      https://assetstore.unity.com/packages/3d/environments/3d-game-assets-flora-318366
 
 2. 3D Low Poly Nature Packs Free
    - 取得平台：Unity Asset Store
-   - 用途：場景中的低多邊形自然環境模型
+   - 用途：場景中的樹、石頭等自然環境模型
    - 來源：
      https://assetstore.unity.com/packages/3d/environments/landscapes/3d-low-poly-nature-packs-free-327057
 
@@ -68,7 +68,7 @@ Renderer 設定：使用 URP Renderer；未另外加入自訂 Renderer Feature
 3. 貓咪動畫包含：idle、walk、fly。
 4. 將蝴蝶拍翅序列圖置入 Spine 並完成動畫整合。
 5. 完成 Spine 動畫於 Unity Animator 中的初始設定，包含各動畫 State 的建立，
-以及 State 之間的 Transition 串接與切換設定。
+以及 State 之間的 Transition 串接。
 
 【Particle 粒子特效】
 1. 貓咪變身特效：TransformBurst.prefab
@@ -113,7 +113,11 @@ Renderer 設定：使用 URP Renderer；未另外加入自訂 Renderer Feature
    Mesh Collider 與 Box Collider，避免不必要的物理系統註冊、查詢及
    記憶體占用。
 
-2. 壓縮 Spine 圖集
+2. 設定靜態場景物件
+   將場景中確定不會移動、旋轉或縮放的樹木、花草等模型標記為 Static，讓 
+   Unity 減少執行時的渲染與運算負擔。
+
+3. 壓縮 Spine 圖集
    - 工具：Squoosh
    - 來源：https://squoosh.app/
    - 用途：壓縮 Spine 圖集檔案，降低資產檔案大小與載入負擔。
